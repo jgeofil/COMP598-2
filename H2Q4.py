@@ -18,7 +18,7 @@ def main(argv):
     THRESH = 0.e-200
 
     try:
-        opts, args = getopt.getopt(argv,"hi:")
+        opts, args = getopt.getopt(argv,"hi:j:t:l:")
     except getopt.GetoptError:
         print(helpMsg)
         sys.exit(2)
