@@ -91,7 +91,7 @@ def main(argv):
     indexes = np.argsort(abs(w))
     print w
 
-    v = v[indexes][-1]
+    v = v[0]
     #v = v[1]
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
