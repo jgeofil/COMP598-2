@@ -91,13 +91,13 @@ def main(argv):
     indexes = np.argsort(abs(w))
     print w
 
-    v = v[0]
+    v = v[indexes][-1]
     #v = v[1]
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
 
-    v = v
+    v = abs(v)
     print(v)
 
     sort = np.argsort(v)[::-1]
