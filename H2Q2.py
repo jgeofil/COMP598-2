@@ -81,8 +81,8 @@ def main(argv):
 
         tpc = []
         fpc = []
-        for i in range(0,1000):
-            L = i/float(1000)
+        for i in np.arange(0,1.5,0.001):
+            L = i
             pred = getProp(sq,L)
             tp, fp = getRates(pred, ss)
             tpc.append(tp)

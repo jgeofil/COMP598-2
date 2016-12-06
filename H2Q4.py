@@ -5,14 +5,17 @@ from scipy import linalg
 import pickle
 import scipy.sparse as sp
 from collections import Counter
+print np.version.version
 
 np.set_printoptions(edgeitems=500, precision=4)
 
 def main(argv):
-    helpMsg = 'H2Q2.py -i <network1> -j <network2>'
+    helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -l'
 
-    netFileA = 'N1.txt'
-    netFileB = 'N2.txt'
+    netFileA = 'NT1.txt'
+    netFileB = 'NT2.txt'
+    load = False
+    THRESH = 0.e-200
 
     try:
         opts, args = getopt.getopt(argv,"hi:")
@@ -27,6 +30,10 @@ def main(argv):
             netFileA = arg
         elif opt == "-j":
             netFileB = arg
+        elif opt == "-t":
+            THRESH = arg
+        elif opt=='-l':
+            load = True
 
     print ('Opening file ' + netFileA +' ...')
     f =  open(netFileA)
@@ -42,10 +49,8 @@ def main(argv):
 
     def getInteractionMatrix(classes, interactions):
         NA = np.zeros((len(classes), len(classes)), dtype=int)
-
         for vu in interactions.T:
             i, j = classes.index(vu[0]), classes.index(vu[1])
-
             NA[i,j], NA[j,i]= 1,1
         return NA
 
@@ -64,48 +69,46 @@ def main(argv):
                         A[Ai,Aj] = val
         return A
 
-    NA = getInteractionMatrix(classA1, linesA)
-    NB = getInteractionMatrix(classB1, linesB)
+    if not load:
+        NA = getInteractionMatrix(classA1, linesA)
+        NB = getInteractionMatrix(classB1, linesB)
 
-    Am = getAMatrix(NA,NB)
+        Am = getAMatrix(NA,NB)
 
-    np.save('data/amat', Am)
+        np.save('data/amat', Am)
 
+        Am = np.load('data/amat.npy')
+        #print np.sum(Am, axis=1)
+        #print np.sum(Am, axis=0)
 
-    Am = np.load('data/amat.npy')
-    #print np.sum(Am, axis=1)
-    #print np.sum(Am, axis=0)
+        w,v = linalg.eig(Am)
 
-    w,v = linalg.eig(Am)
-    print (w)
-    print (v)
-
-    np.save('data/wvec', w)
-    np.save('data/vvec', v)
+        np.save('data/wvec', w)
+        np.save('data/vvec', v)
 
     w = np.load('data/wvec.npy')
     v = np.load('data/vvec.npy')
     indexes = np.argsort(abs(w))
+    print w
+
     v = v[indexes][-1]
-
-
+    #v = v[1]
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
 
-    sort = np.argsort(abs(v))
-    print abs(v)[sort]
+    v = abs(v)
+    print(v)
 
+    sort = np.argsort(v)[::-1]
 
     resA = []
     resB = []
     Ain = Ain[sort]
     Bin = Bin[sort]
+    v = v[sort]
 
-    print ([classA1[i] for i in Ain])
-    print ([classB1[i] for i in Bin])
-
-    while len(Ain) > 0 and len(Bin) > 0 :
+    while len(Ain) > 0 and len(Bin) > 0 and v[0] > THRESH:
         resA.append(Ain[0])
         resB.append(Bin[0])
         whA = np.where(Ain == Ain[0])[0]
@@ -115,12 +118,17 @@ def main(argv):
         stwh = np.unique(np.concatenate((whA,whB,whA2,whB2)))
         Ain = np.delete(Ain, stwh)
         Bin = np.delete(Bin, stwh)
+        v = np.delete(v, stwh)
 
     nodesA = [classA1[x] for x in resA]
     nodesB = [classB1[x] for x in resB]
 
+    f = open('out'+netFileA+netFileB,'w')
+
     for a,b in zip(nodesA, nodesB):
         print a, b
+        f.write(str(a)+' '+str(b)+'\n')
+    f.close()
 
 if __name__ == "__main__":
    main(sys.argv[1:])
