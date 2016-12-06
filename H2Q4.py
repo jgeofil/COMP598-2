@@ -97,7 +97,7 @@ def main(argv):
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
 
-    v = abs(v)
+    v = v
     print(v)
 
     sort = np.argsort(v)[::-1]
