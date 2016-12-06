@@ -11,8 +11,8 @@ np.set_printoptions(edgeitems=500, precision=4)
 def main(argv):
     helpMsg = 'H2Q2.py -i <network1> -j <network2>'
 
-    netFileA = 'NT1.txt'
-    netFileB = 'NT2.txt'
+    netFileA = 'N1.txt'
+    netFileB = 'N2.txt'
 
     try:
         opts, args = getopt.getopt(argv,"hi:")
@@ -28,8 +28,6 @@ def main(argv):
         elif opt == "-j":
             netFileB = arg
 
-
-
     print ('Opening file ' + netFileA +' ...')
     f =  open(netFileA)
     linesA = f.read().splitlines()
@@ -41,9 +39,8 @@ def main(argv):
     linesB = f.read().splitlines()
     linesB = np.array([l.split(' ') for l in linesB]).T
     classB1 = np.unique(np.concatenate((linesB[0],linesB[1]))).tolist()
-    '''
+
     def getInteractionMatrix(classes, interactions):
-        print classes
         NA = np.zeros((len(classes), len(classes)), dtype=int)
 
         for vu in interactions.T:
@@ -55,8 +52,6 @@ def main(argv):
     def getAMatrix(N1, N2):
         N1sum = np.sum(N1, axis=0)
         N2sum = np.sum(N2, axis=0)
-        print N1sum
-        print N2sum
         A = np.zeros((len(N1sum)*len(N2sum), len(N1sum)*len(N2sum)))
 
         for i,ni in enumerate(N1sum):
@@ -65,22 +60,19 @@ def main(argv):
                     for v,nv in enumerate(N2sum):
                         Ai = (i*len(N1sum))+j
                         Aj = (u*len(N1sum))+v
-                        print nu, nv, nu*nv
                         val = 1.0/(nu*nv) if N1[i,u] and N2[j,v] else 0
-                        print val
                         A[Ai,Aj] = val
-        print A
         return A
 
     NA = getInteractionMatrix(classA1, linesA)
     NB = getInteractionMatrix(classB1, linesB)
 
     Am = getAMatrix(NA,NB)
-    '''
-    #np.save('amat', Am)
+
+    np.save('data/amat', Am)
 
 
-    Am = np.load('amat.npy')
+    Am = np.load('data/amat.npy')
     #print np.sum(Am, axis=1)
     #print np.sum(Am, axis=0)
 
@@ -88,11 +80,11 @@ def main(argv):
     print (w)
     print (v)
 
-    #np.save('wvec', w)
-    #np.save('vvec', v)
+    np.save('data/wvec', w)
+    np.save('data/vvec', v)
 
-    #w = np.load('wvec.npy')
-    #v = np.load('vvec.npy')
+    w = np.load('data/wvec.npy')
+    v = np.load('data/vvec.npy')
     indexes = np.argsort(abs(w))
     v = v[indexes][-1]
 
@@ -128,7 +120,7 @@ def main(argv):
     nodesB = [classB1[x] for x in resB]
 
     for a,b in zip(nodesA, nodesB):
-        print (a, b, str(1))
+        print a, b
 
 if __name__ == "__main__":
    main(sys.argv[1:])
