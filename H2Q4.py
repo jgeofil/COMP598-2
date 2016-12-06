@@ -93,14 +93,14 @@ def main(argv):
 
     #w = np.load('wvec.npy')
     #v = np.load('vvec.npy')
-    indexes = np.argsort(w)
+    indexes = np.argsort(abs(w))
     v = v[indexes][-1]
 
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
 
-    sort = np.argsort(v)[::-1]
+    sort = np.argsort(abs(v))[::-1]
 
 
     resA = []
