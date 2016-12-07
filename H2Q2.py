@@ -70,7 +70,7 @@ def main(argv):
                     TN += 1
         return TP/float(TP+FN), FP/float(FP+TN)
 
-    def calculate():
+    def calculate(p, pro=''):
         print '----------------------True secondary structure----------------------'
         print ss
         print sq
@@ -81,7 +81,7 @@ def main(argv):
 
         tpc = []
         fpc = []
-        for i in np.arange(0,1.5,0.001):
+        for i in np.arange(0,p,0.001):
             L = i
             pred = getProp(sq,L)
             tp, fp = getRates(pred, ss)
@@ -97,7 +97,7 @@ def main(argv):
         print gini
 
         plt.plot(fpc, tpc)
-        plt.title('ROC curve calculated by varying the threshold $\lambda$\n with a window size of '+str(W))
+        plt.title('ROC curve calculated by varying the threshold $\lambda$\n with a window size of '+str(W)+ pro)
         plt.xlim([0, 1])
         plt.ylim([0, 1])
         plt.ylabel('TPR')
@@ -110,11 +110,15 @@ def main(argv):
     print '####################################################################'
     print 'Running with window = 0'
     W = 0
-    calculate()
+    calculate(1.1, pro=' and Proline = 3.01')
+    print '####################################################################'
+    print 'Running with window = 0 and Proline = 1'
+    W = 0
+    calculate(4, pro=' and Proline = 1')
     print '####################################################################'
     print 'Running with window = 4'
     W = 4
-    calculate()
+    calculate(1.1)
 
 if __name__ == "__main__":
    main(sys.argv[1:])

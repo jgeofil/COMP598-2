@@ -91,26 +91,32 @@ def main(argv):
     indexes = np.argsort(abs(w))
     print w[indexes][-1]
 
-    v = v[indexes][-1]
-    #v = v[1]
+    #v = v[indexes][-1]
+    v = v[0]
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
 
-    v = v
-    print(v)
+    v = abs(v)
+
 
     sort = np.argsort(v)[::-1]
 
     resA = []
     resB = []
+    vals = []
     Ain = Ain[sort]
     Bin = Bin[sort]
     v = v[sort]
+    print(v)
+
+    print [classB1[i] for i in Bin]
+    print [classA1[i] for i in Ain]
 
     while len(Ain) > 0 and len(Bin) > 0 and v[0] > THRESH:
         resA.append(Ain[0])
         resB.append(Bin[0])
+        vals.append(v[0])
         whA = np.where(Ain == Ain[0])[0]
         whA2 = np.where(Bin == Ain[0])[0]
         whB = np.where(Bin == Bin[0])[0]
@@ -125,8 +131,8 @@ def main(argv):
 
     f = open('out'+netFileA+netFileB,'w')
 
-    for a,b in zip(nodesA, nodesB):
-        print a, b
+    for a,b,val in zip(nodesA, nodesB, vals):
+        print a, b, val
         f.write(str(a)+' '+str(b)+'\n')
     f.close()
 
