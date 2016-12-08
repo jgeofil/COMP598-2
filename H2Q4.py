@@ -73,7 +73,6 @@ def main(argv):
 
                         Ai = (i*(len(N1sum)-1))+j
                         Aj = (u*(len(N1sum)-1))+v
-                        print u,v,Aj
                         val = 1.0/(nu*nv) if N1[i,u] and N2[j,v] else 0
                         A[Ai,Aj] = val
         return A
