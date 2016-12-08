@@ -139,7 +139,7 @@ def main(argv):
     for a,b,val in zip(nodesA, nodesB, vals):
         print a, b, val
         f.write(str(a)+' '+str(b)+'\n')
-        logging.info(str(str(a)+' '+str(b)+'\n'))
+        logging.info(str(str(a)+' '+str(b)+' '+str(val)+'\n'))
     f.close()
 
 if __name__ == "__main__":
