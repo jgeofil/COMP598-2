@@ -5,20 +5,23 @@ from scipy import linalg
 import pickle
 import scipy.sparse as sp
 from collections import Counter
-print np.version.version
+
+import logging
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
 
 np.set_printoptions(edgeitems=500, precision=4)
 
 def main(argv):
-    helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -l'
+    helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -<outputFile> -l'
 
     netFileA = 'NT1.txt'
     netFileB = 'NT2.txt'
+    outputFile = 'out.txt'
     load = False
     THRESH = 0.e-200
 
     try:
-        opts, args = getopt.getopt(argv,"hi:j:t:l:")
+        opts, args = getopt.getopt(argv,"hi:j:t:o:l:")
     except getopt.GetoptError:
         print(helpMsg)
         sys.exit(2)
@@ -32,6 +35,8 @@ def main(argv):
             netFileB = arg
         elif opt == "-t":
             THRESH = arg
+        elif opt == "-o":
+            outputFile = arg
         elif opt=='-l':
             load = True
 
@@ -108,10 +113,8 @@ def main(argv):
     Ain = Ain[sort]
     Bin = Bin[sort]
     v = v[sort]
-    print(v)
-
-    print [classB1[i] for i in Bin]
-    print [classA1[i] for i in Ain]
+    logging.info('----------EigenVector--------')
+    logging.info(str(v))
 
     while len(Ain) > 0 and len(Bin) > 0 and v[0] > THRESH:
         resA.append(Ain[0])
@@ -129,11 +132,12 @@ def main(argv):
     nodesA = [classA1[x] for x in resA]
     nodesB = [classB1[x] for x in resB]
 
-    f = open('out'+netFileA+netFileB,'w')
+    f = open(outputFile,'w')
 
     for a,b,val in zip(nodesA, nodesB, vals):
         print a, b, val
         f.write(str(a)+' '+str(b)+'\n')
+        logging.info(str(str(a)+' '+str(b)+'\n'))
     f.close()
 
 if __name__ == "__main__":
