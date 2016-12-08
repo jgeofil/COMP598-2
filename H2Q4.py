@@ -14,7 +14,7 @@ np.set_printoptions(edgeitems=500, precision=4)
 def main(argv):
     helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -o <outputFile> -l'
 
-    netFileA = 'NT1.txt'
+    netFileA = 'NT2.txt'
     netFileB = 'NT1.txt'
     outputFile = 'out.txt'
     load = False
@@ -68,11 +68,14 @@ def main(argv):
         print A.shape
         for i,ni in enumerate(N1sum):
             for j,nj in enumerate(N2sum):
+
                 for u,nu in enumerate(N1sum):
                     for v,nv in enumerate(N2sum):
 
-                        Ai = (i*(len(N1sum)-1))+j
-                        Aj = (u*(len(N1sum)-1))+v
+                        Ai = (i*(len(N2sum)))+j
+                        Aj = (u*(len(N2sum)))+v
+
+                        print i,j,Ai
                         val = 1.0/(nu*nv) if N1[i,u] and N2[j,v] else 0
                         A[Ai,Aj] = val
         return A
@@ -103,7 +106,9 @@ def main(argv):
     v = v[0]
 
     Ain = np.concatenate([[i]*len(classB1) for i in range(len(classA1))])
+
     Bin = np.array([x for x in range(len(classB1))]*len(classA1))
+
 
     v = abs(v)
 
@@ -119,7 +124,7 @@ def main(argv):
     logging.info('----------EigenVector--------')
     logging.info(str(v))
 
-    while len(Ain) > 0 and len(Bin) > 0 and v[0] > THRESH:
+    while len(Ain) > 0 and len(Bin) > 0:
         resA.append(Ain[0])
         resB.append(Bin[0])
         vals.append(v[0])
@@ -139,9 +144,17 @@ def main(argv):
 
     for a,b,val in zip(nodesA, nodesB, vals):
         print a, b, val
-        f.write(str(a)+' '+str(b)+'\n')
-        logging.info(str(str(a)+' '+str(b)+' '+str(val)+'\n'))
+        if val >= THRESH:
+            f.write(str(a)+' '+str(b)+'\n')
     f.close()
+
+    import csv
+    with open(netFileA+netFileB+'.csv', 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=' ',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for a,b,val in zip(nodesA, nodesB, vals):
+            spamwriter.writerow([a, b, vals[0]])
+
 
 if __name__ == "__main__":
    main(sys.argv[1:])
