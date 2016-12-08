@@ -12,13 +12,13 @@ import logging
 np.set_printoptions(edgeitems=500, precision=4)
 
 def main(argv):
-    helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -<outputFile> -l'
+    helpMsg = 'H2Q2.py -i <network1> -j <network2> -t <threshold> -o <outputFile> -l'
 
     netFileA = 'NT1.txt'
-    netFileB = 'NT2.txt'
+    netFileB = 'NT1.txt'
     outputFile = 'out.txt'
     load = False
-    THRESH = 0.e-200
+    THRESH = 0.00001
 
     try:
         opts, args = getopt.getopt(argv,"hi:j:t:o:l:")
@@ -65,13 +65,15 @@ def main(argv):
         N1sum = np.sum(N1, axis=0)
         N2sum = np.sum(N2, axis=0)
         A = np.zeros((len(N1sum)*len(N2sum), len(N1sum)*len(N2sum)))
-
+        print A.shape
         for i,ni in enumerate(N1sum):
             for j,nj in enumerate(N2sum):
                 for u,nu in enumerate(N1sum):
                     for v,nv in enumerate(N2sum):
-                        Ai = (i*len(N1sum))+j
-                        Aj = (u*len(N1sum))+v
+
+                        Ai = (i*(len(N1sum)-1))+j
+                        Aj = (u*(len(N1sum)-1))+v
+                        print u,v,Aj
                         val = 1.0/(nu*nv) if N1[i,u] and N2[j,v] else 0
                         A[Ai,Aj] = val
         return A
