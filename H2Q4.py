@@ -7,7 +7,7 @@ import scipy.sparse as sp
 from collections import Counter
 
 import logging
-logging.basicConfig(filename='example.log',level=logging.DEBUG)
+
 
 np.set_printoptions(edgeitems=500, precision=4)
 
@@ -39,6 +39,8 @@ def main(argv):
             outputFile = arg
         elif opt=='-l':
             load = True
+
+    logging.basicConfig(filename=netFileA+netFileB+'.log',level=logging.DEBUG)
 
     print ('Opening file ' + netFileA +' ...')
     f =  open(netFileA)
