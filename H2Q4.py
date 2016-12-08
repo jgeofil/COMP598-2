@@ -153,7 +153,7 @@ def main(argv):
         spamwriter = csv.writer(csvfile, delimiter=' ',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for a,b,val in zip(nodesA, nodesB, vals):
-            spamwriter.writerow([a, b, vals[0]])
+            spamwriter.writerow([a, b, val])
 
 
 if __name__ == "__main__":
