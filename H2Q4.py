@@ -75,7 +75,7 @@ def main(argv):
                         Ai = (i*(len(N2sum)))+j
                         Aj = (u*(len(N2sum)))+v
 
-                        print i,j,Ai
+                        #print i,j,Ai
                         val = 1.0/(nu*nv) if N1[i,u] and N2[j,v] else 0
                         A[Ai,Aj] = val
         return A
@@ -86,19 +86,19 @@ def main(argv):
 
         Am = getAMatrix(NA,NB)
 
-        np.save('data/amat', Am)
+        #np.save('data/amat', Am)
 
-        Am = np.load('data/amat.npy')
+        #Am = np.load('data/amat.npy')
         #print np.sum(Am, axis=1)
         #print np.sum(Am, axis=0)
 
         w,v = linalg.eig(Am)
 
-        np.save('data/wvec', w)
-        np.save('data/vvec', v)
+        #np.save('data/wvec', w)
+        #np.save('data/vvec', v)
 
-    w = np.load('data/wvec.npy')
-    v = np.load('data/vvec.npy')
+    #w = np.load('data/wvec.npy')
+    #v = np.load('data/vvec.npy')
     indexes = np.argsort(abs(w))
     print w[indexes][-1]
 
